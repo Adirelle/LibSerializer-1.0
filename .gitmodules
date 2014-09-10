@@ -1,0 +1,3 @@
+[submodule "tests/wowmock"]
+	path = tests/wowmock
+	url = github:wowmock.git
