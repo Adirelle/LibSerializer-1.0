@@ -46,20 +46,20 @@ function tests:test_serialize(input, expected)
 end
 
 dataprovider('test_serialize',
-	{ 0, "1:0" },
-	{ true, "1:t" },
-	{ false, "1:f" },
-	{ {}, "1:e" },
-	{ nil, "1:z" },
-	{ 45, "1:n45:" },
-	{ 1/3, "1:d6004799503160661:-54:" },
-	{ "FooBar", "1:sFooBar:" },
-	{ "Foo Bar !", "1:~Foo~`Bar~`!:" },
-	{ "FooBar~", "1:~FooBar~~:", },
-	{ "a:b", "1:~a~1b:" },
-	{ { a = 5, "b" }, "1:T1sb:sa:5z" },
-	{ { { b = 8 } }, "1:T1Tsb:8zz" },
-	{ { "aaaaa", "bb:bb", "aaaaa", "c", "bb:bb" }, "1:T1saaaaa:2~bb~1bb:3<0:4sc:5<1:z" }
+	{ 0, "10" },
+	{ true, "1t" },
+	{ false, "1f" },
+	{ {}, "1e" },
+	{ nil, "1z" },
+	{ 45, "1n45:" },
+	{ 1/3, "1d6004799503160661:-54:" },
+	{ "FooBar", "1sFooBar:" },
+	{ "Foo Bar !", "1~Foo~`Bar~`!:" },
+	{ "FooBar~", "1~FooBar~~:", },
+	{ "a:b", "1~a~1b:" },
+	{ { a = 5, "b" }, "1T1sb:sa:5z" },
+	{ { { b = 8 } }, "1T1Tsb:8zz" },
+	{ { "aaaaa", "bb:bb", "aaaaa", "c", "bb:bb" }, "1T1saaaaa:2~bb~1bb:3<0:4sc:5<1:z" }
 )
 
 function tests:test_serialize_error_function()
@@ -79,7 +79,7 @@ function tests:test_serialize_references()
 	a[2] = b
 	a[3] = c
 	a[4] = c
-	assertEquals(lib:serialize(a), "1:T152T182r0:z3e4r2:z")
+	assertEquals(lib:serialize(a), "1T152T182r0:z3e4r2:z")
 end
 
 function tests:test_deserialize(expected, input)
@@ -87,42 +87,43 @@ function tests:test_deserialize(expected, input)
 end
 
 dataprovider('test_deserialize',
-	{ 0, "1:0" },
-	{ true, "1:t" },
-	{ false, "1:f" },
-	{ {}, "1:e" },
-	{ nil, "1:z" },
-	{ 45, "1:n45:" },
-	{ 1/3, "1:d6004799503160661:-54:" },
-	{ "FooBar", "1:sFooBar:" },
-	{ "Foo Bar !", "1:~Foo~`Bar~`!:" },
-	{ "FooBar~", "1:~FooBar~~:", },
-	{ "a:b", "1:~a~1b:" },
-	{ { a = 5, "b" }, "1:T1sb:sa:5z" },
-	{ { { b = 8 } }, "1:T1Tsb:8zz" },
-	{ { "aaaaa", "bb:bb", "aaaaa", "c", "bb:bb" }, "1:T1saaaaa:2~bb~1bb:3<0:4sc:5<1:z" }
+	{ 0, "10" },
+	{ true, "1t" },
+	{ false, "1f" },
+	{ {}, "1e" },
+	{ nil, "1z" },
+	{ 45, "1n45:" },
+	{ 1/3, "1d6004799503160661:-54:" },
+	{ "FooBar", "1sFooBar:" },
+	{ "Foo Bar !", "1~Foo~`Bar~`!:" },
+	{ "FooBar~", "1~FooBar~~:", },
+	{ "a:b", "1~a~1b:" },
+	{ { a = 5, "b" }, "1T1sb:sa:5z" },
+	{ { { b = 8 } }, "1T1Tsb:8zz" },
+	{ { "aaaaa", "bb:bb", "aaaaa", "c", "bb:bb" }, "1T1saaaaa:2~bb~1bb:3<0:4sc:5<1:z" }
 )
 
 function tests:test_deserialize_error(input)
-	assertEquals(pcall(lib.unserialize, lib, input), false)
+	local success, message = pcall(lib.unserialize, lib, input)
+	assertEquals(success, false)
 end
 
 dataprovider('test_deserialize_error',
 	{ "" },
 	{ "zz" },
 	{ "1:zz" },
-	{ "1:w" },
+	{ "1w" },
 	{ 5 },
-	{ "1:n48" },
-	{ "1:s575997" },
-	{ "1:s575:7898" },
-	{ "1:T0102" },
-	{ "1:~Foo~5ar:" },
-	{ "1:~FooBar~:" }
+	{ "1n48" },
+	{ "1s575997" },
+	{ "1s575:7898" },
+	{ "1T0102" },
+	{ "1~Foo~5ar:" },
+	{ "1~FooBar~:" }
 )
 
 function tests:test_deserialize_references()
-	local a = lib:unserialize("1:T152T182r0:z3e4r2:z")
+	local a = lib:unserialize("1T152T182r0:z3e4r2:z")
 	assertEquals(a[1], 5)
 	local b = a[2]
 	assertEquals(b[1], 8)
